@@ -8,6 +8,8 @@ library(multcomp)
 
 vit <- read.csv("data/vitamin-a.csv")
 
+vit$dose <- as.factor(vit$dose) #Convertimos en factor la dosis
+
 view(vit)
 
 
@@ -41,7 +43,7 @@ effect("dose", model)
 
 #Multiples comparaciones entre medias ajustadas
 
-model$model$dose <- as.factor(model$model$dose)  #Arreglando el modelo con un factor
+#model$model$dose <- as.factor(model$model$dose)  #Arreglando el modelo con un factor
 mcomp <- glht(model, linfct=mcp(dose = "Tukey"))
 
 #Sumando as diferencias estadisticamente significativas
@@ -60,4 +62,25 @@ model <- aov(effort~age*dose, data = vit)
 av <- Anova(model, type = "III")
 av
 
+#Normalidad de los reciduales
 
+res <- residuals(model)
+
+zres <- scale(res)
+
+shapiro.test(zres)
+
+#Revisar por homogenidad de las varianzas
+
+leveneTest(vit$effort, vit$dose)
+
+#Revisar por Homoskedasticity 
+
+#Tomando las valores predicidos por la variable dependiente
+
+pred <- predict(model)
+
+
+#Construyendo un scatterplot (Predicted vrs. residuals)
+
+ggplot()+geom_point(aes(x=pred, y = zres))
