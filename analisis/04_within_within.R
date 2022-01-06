@@ -14,6 +14,7 @@
 
 library(tidyverse)
 library(car)
+library(reshape2)
 
 fact <- read.csv("data/factors-within-within.csv")
 diet <- read.csv("data/diet2.csv")
@@ -74,3 +75,28 @@ xr_frm$xr <- as.factor(xr_frm$xr) #Convertimos en factor para que no de error
 model04 <- Anova(model03, idata = xr_frm, idesign = ~xr, type = "III")
 
 summary(model04, multivariate = FALSE) #Esta en falso porque no necesitalos los resultados de MANOVA
+
+
+#Obteniendo una comparacion simple de Tukey para encontrar cuan grandes son las diferencias.
+
+
+dietm <- melt(diet2)
+
+#Dando a las columnas nombres sugestivos
+
+colnames(dietm) <- c("group", "weight")
+
+#Construyendo el modelo ANOVA
+
+model05 <- aov(weight~group, data = dietm)
+
+#Calculando el emparejamiento en los test de comparación
+
+TukeyHSD(model05)
+
+#El mismo procedimiento puede ser aplicado a las otras dos diferencias
+
+#Caclulando las direcencias entre el peso al inicio y a mediados de la dieta con y sin ejercicio.
+
+
+
