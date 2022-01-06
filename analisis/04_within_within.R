@@ -44,4 +44,33 @@ model_02 <- Anova(model, idata = fact, idesign =~Exercise*Time, type = "III")
 summary(model_02, multivariate = FALSE) # Le pusimos falso porque no necesitamos los resultados MANOVA
 
 
-#
+#evaluando peso con ejercicio fisico - peso sin ejercicio fisico en cada uno de los estados de la dieta.
+
+diet2 <- diet[,c("weight_beg", "weight_beg_ex")]
+
+view(diet2)
+
+#Creamos el dataframe con los niveles del ejercicio de factores.
+
+xr <- c("no", "yes")
+
+xr_frm <- data.frame(xr)
+View(xr_frm)
+
+
+##Crear la matriz con elas columnas del dataframe diet2
+
+xr_mat <- cbind(diet2$weight_beg, diet2$weight_beg_ex)
+
+#Creamos el modelo linear para obtener el promedio de las variables dependientes.
+
+model03 <- lm(xr_mat~1)
+
+#Creamos el modelo entre los sujetos
+
+xr_frm$xr <- as.factor(xr_frm$xr) #Convertimos en factor para que no de error
+
+
+model04 <- Anova(model03, idata = xr_frm, idesign = ~xr, type = "III")
+
+summary(model04, multivariate = FALSE) #Esta en falso porque no necesitalos los resultados de MANOVA
